@@ -9,3 +9,14 @@ Tendremos un código en arduino que recibirá los comandos: Se basa en el códig
 Inspirado, y aprendiendo del [tutorial](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript) de @victornomad 
 
 Aprendiendo/recordando sobre clases en javascript de [este tutorial](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript)
+
+v0.5 Control via 3 joystick
+v0.6 Posición inicial
+v0.7 Última posición en eeprom
+v1.0 Control via bluetooth 
+v1.1 Control via 3 joystick & bluetooth
+v1.2 Feedback de control via joystick
+...
+v1.5 Forward Kinematic plot
+...
+v2.0 Inverse Kinematric
