@@ -1,4 +1,4 @@
-v0.5 Control via 3 joystick
+v0.5 Control via 3 joystick DONE!!!
 v0.6 Posición inicial
 v0.7 Última posición en eeprom
 v1.0 Control via bluetooth 
