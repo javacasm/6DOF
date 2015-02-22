@@ -5,36 +5,42 @@
 #include <Servo.h>
 #include "controlServo.h"
 
+#define nDOF 6
 
-controlServo csHip(12,A0);
-controlServo csSoulder(11,A1);
-controlServo csElbow(10,A2);
-controlServo csWristP(9,A3);
-controlServo csWristR(8,A4);
-controlServo csGrip(7,A5);
-//controlServo servos[]={csHip,csSoulder,csElbow,csWristP,csWristR,csGrip};
+controlServo csHip(12,A0,"H");
+controlServo csSoulder(11,A1,"S");
+controlServo csElbow(10,A2,"E");
+controlServo csWristP(9,A3,"WP");
+controlServo csWristR(8,A4,"WR");
+controlServo csGrip(7,A5,"G");
+controlServo servos[]={csHip,csSoulder,csElbow,csWristP,csWristR,csGrip};
 
 void setup() 
 { 
   Serial.begin(9600);
 
-
-  csHip.inicializa();
+  for(int i=0;i<nDOF;i++)
+    servos[i].inicializa();
+    
+ /* csHip.inicializa();
   csSoulder.inicializa();
   csElbow.inicializa();
   csWristP.inicializa();
   csHip.inicializa();
-  csGrip.inicializa();
+  csGrip.inicializa();*/
 } 
 
 void loop() 
 { 
-  csHip.checkControlSetServo();
+/*  csHip.checkControlSetServo();
   csSoulder.checkControlSetServo();
   csGrip.checkControlSetServo();
   csElbow.checkControlSetServo();
   csWristR.checkControlSetServo();
-  csWristP.checkControlSetServo();
-  
-//String status=csHip.getStatus()+" "+
+  csWristP.checkControlSetServo();*/
+  String strStatus="";
+  for(int i=0;i<nDOF;i++)
+    strStatus+=servos[i].checkControlSetServo();
+
+  Serial.println(strStatus);
 } 
