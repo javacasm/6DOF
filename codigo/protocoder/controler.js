@@ -8,69 +8,79 @@
 
 // The main program!!
 var metal = new Arm();
-
+metal.start();
 metal.init();
-robot.say("hello everybody");
-robot.fullServo1(90);
-robot.led(0);
+metal.say("hello everybody");
+
 
 // Create the UI: 6 slider each for a DOF
 // One every 100 y pixel
 // TODO: Create dinamically: only change the position and the articulation ¿maybe an array of Articulations?
 
-// wrist Pitch 
-var sldWP = ui.addSlider(20, 20, ui.sw - 20, -1, 180, 1,
+// Hip  
+var sldHip = ui.addSlider(20, 20, ui.sw - 20, -1, 180, 1,
 function(progress){
  var iP = Math.round(progress);
- robot.wristP(iP);
+ metal.hip(iP);
 });
+
+// Shoulder  
+var sldSld = ui.addSlider(20, 120, ui.sw - 20, -1, 180, 1,
+function(progress){
+ var iP = Math.round(progress);
+ metal.shoulder(iP);
+});
+
+// Elbow
+var sldElb = ui.addSlider(20, 220, ui.sw - 20, -1, 180, 1,
+function(progress){
+ var iP = Math.round(progress);
+ metal.elbow(iP);
+});
+
+// wrist Pitch
+var sldWP = ui.addSlider(20, 320, ui.sw - 20, -1, 180, 1,
+function(progress){
+ var iP = Math.round(progress);
+ metal.wristR(iP);
+});
+
 
 // wrist Roll
-var sldWR = ui.addSlider(20, 120, ui.sw - 20, -1, 180, 1,
+var sldWR = ui.addSlider(20, 420, ui.sw - 20, -1, 180, 1,
 function(progress){
  var iP = Math.round(progress);
- robot.wristR(iP);
+ metal.wristR(iP);
 });
 
-// Hip 
-var sldH = ui.addSlider(20, 20, ui.sw - 20, -1, 180, 1,
+
+// Grip
+var sldGrp = ui.addSlider(20, 520, ui.sw - 20, -1, 180, 1,
 function(progress){
  var iP = Math.round(progress);
- robot.wristP(iP);
+ metal.grip(iP);
 });
-var slider3 = ui.addSlider(20, 220, ui.sw - 20, -1, 180, 1,
-function(progress){
- var iP = Math.round(progress);
- robot.microServo1(iP);
-});
-var slider4 = ui.addSlider(20, 320, ui.sw - 20, -1, 180, 1,
-function(progress){
- var iP = Math.round(progress);
- robot.microServo2(iP);
-});
-ui.setBackgroundImage("robot.png");
+
+//ui.setBackgroundImage("robot.png");
 
 
 
 // Articulation Class, hold de value an send to arduino each command
-function Arti(token,min,max,ini){
-  this.idToken='q';     
+function Arti(token,min,max,ini)
+{
+  this.idToken=token;     
   this.minPosition=min;
   this.maxPosition=max;
   this.initialPosition=ini;
   
   this.init=function()   
-  {
-      this.servo(this.initialPosition); 
-  }
+  {   this.servo(this.initialPosition);  };
   
   // Send the comand to the arduino
-  this.servo=function(position)   
-  {
-    if(position>this.minPosition && position<this.maxPosition)
-        network.sendBluetoothSerial(this.idToken+position + "\n"
-    )
-  }
+  this.servo=function(position)   // TODO: arreglar bluetooth
+  {    if(position>this.minPosition && position<this.maxPosition)
+             {network.sendBluetoothSerial(this.idToken+position + "\n" );}
+  };
 }
 
 
@@ -78,45 +88,45 @@ function Arm() {
  
  var hip=new Arti("h",150,3200,1000);
  var elbow=new Arti("e",150,3200,1000);
- var wristx=new Arti("x",150,3200,1000);
- var wristy=new Arti("y",150,3200,1000);
+ var wristP=new Arti("p",150,3200,1000);
+ var wristR=new Arti("r",150,3200,1000);
  var shoulder=new Arti("s",150,3200,1000);
- var grip=new Arti("g",150,3200,1000)
+ var grip=new Arti("g",150,3200,1000);
  
  
  this.start = function() {
- network.connectBluetoothSerialByUi(function(m, data) {
- console.log(data);
- });
+ 	network.connectBluetoothSerialByUi(function(m, data) 
+ 		{console.log(data); });
  };
 
 
-this.init = function()
-{
+ this.init = function()
+ {
     hip.init();
-    
-};
- this.scan = function() {
- network.scanBluetoothNetworks(function(n, m, s) {
- console.log("hola", n, m, s);
- });
+    shoulder.init();
+    elbow.init();
+    wristR.init();
+    wristP.init();
+    grip.init();
+ };
+
+ this.scan = function() 
+ {
+ 	network.scanBluetoothNetworks(function(n, m, s) 
+ 		{ 		console.log("hola", n, m, s);  	});
  };
  
  
- this.playSound = function(name) {
- media.playSound(name);
- };
+ this.playSound = function(name) 
+ {   media.playSound(name);  };
 
- this.say = function(text) {
- media.textToSpeech(text);
- };
+ this.say = function(text) 
+ {   media.textToSpeech(text);  };
 
- this.showImage = function(name) {
- ui.setBackgroundImage(name);
- };
+ this.showImage = function(name) 
+ {  ui.setBackgroundImage(name);  };
 
- this.stop = function() {
-
- };
+ this.stop = function() 
+ {  };
 
 }
