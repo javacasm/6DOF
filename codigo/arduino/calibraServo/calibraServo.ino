@@ -7,6 +7,13 @@
 
 #define nDOF 6
 
+// Vamos a crear una estructura para almacenar una posicion completa
+struct position
+{
+  char name[4];
+  int pos[nDOF];
+};
+
 controlServo csHip(12,A0,"H");
 controlServo csSoulder(11,A1,"S");
 controlServo csElbow(10,A2,"E");
@@ -20,7 +27,7 @@ void setup()
   Serial.begin(9600);
 
   for(int i=0;i<nDOF;i++)
-    servos[i].inicializa();
+  {    servos[i].inicializa();  }
     
  /* csHip.inicializa();
   csSoulder.inicializa();
@@ -38,9 +45,10 @@ void loop()
   csElbow.checkControlSetServo();
   csWristR.checkControlSetServo();
   csWristP.checkControlSetServo();*/
+  
   String strStatus="";
   for(int i=0;i<nDOF;i++)
-    strStatus+=servos[i].checkControlSetServo();
+  {  strStatus+=servos[i].checkControlSetServo(); }
 
   Serial.println(strStatus);
 } 

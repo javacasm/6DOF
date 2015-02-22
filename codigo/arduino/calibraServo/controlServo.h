@@ -15,25 +15,25 @@ public:
           iPOS_Inicial=iPosInicial;        
     }
         
-    void init(int pinServo,int pinControl,String id)
-    {
-        iPinControl=pinControl;
-    	iPinServo=pinServo;
-	    iPOS_MIN=75;  //fully retracted
-    	iPOS_MAX=3200;
-        iPOS_Inicial=(iPOS_MAX+iPOS_MIN)/2;
-        strID=id;
-    }
+	void init(int pinServo,int pinControl,String id)
+	{
+		iPinControl=pinControl;
+		iPinServo=pinServo;
+		iPOS_MIN=75;  //fully retracted
+		iPOS_MAX=3200;
+		iPOS_Inicial=(iPOS_MAX+iPOS_MIN)/2;
+		strID=id;
+	}
         
 	controlServo(int pinServo,int pinControl,String id)
-	{	init(pinServo,pinControl,id); 	}
+	{   init(pinServo,pinControl,id); 	}
 
 	int setPosicion(int pos)
 	{
-	    servoValue=pos;
-	    //usamos writeMicroseconds para hacerlo más preciso		
-	    servo.writeMicroseconds(servoValue); 		
-	    delay(10); // waits for the servo to get to they're position before continuing 
+		servoValue=pos;
+		//usamos writeMicroseconds para hacerlo más preciso		
+		servo.writeMicroseconds(servoValue); 		
+		delay(10); // waits for the servo to get to they're position before continuing 
 	}
 
 	String getStatus()
@@ -44,35 +44,31 @@ public:
 
 	void inicializa()
 	{
-	    //initialize servos
-	    servo.attach(iPinServo, iPOS_MIN, iPOS_MAX);  // conectamos el servo en este pin y establecemos los valores mínimo y máximo
-	    setPosicion(iPOS_Inicial);
+		//initialize servos
+		servo.attach(iPinServo, iPOS_MIN, iPOS_MAX);  // conectamos el servo en este pin y establecemos los valores mínimo y máximo
+		setPosicion(iPOS_Inicial);
 	}
-
-
 
 	String checkControlSetServo() 
 	{ 
-      
-	    /**************Servo Positions *******************************/
-	    // leemos los valores del joystick
-	    JSValue = analogRead(iPinControl);
-         
-       
-	    // solo actualizamos si estamos por encima de la zona central (para evitar vibraciones)
-	    if(JSValue > DEADBANDHIGH || JSValue < DEADBANDLOW)
-	    {
-           JSValueMapped = map(JSValue, 0, 1023, -speed, speed); //Mapeamos el valor del joystick (0 to 1023) a (-speed to speed)
-           int newValue= servoValue + JSValueMapped; //add mapped joystick value to present Value
-           if((newValue>iPOS_MIN) && (newValue<iPOS_MAX))
-           {
-               if(newValue!=servoValue) // Solo actualizamos si es distinto. Si hay vibraciones podemos hacer un filtrado
-               {
-                   setPosicion(newValue);
-               }
-           }
-   		}
-        return getStatus();       
+		/**************Servo Positions *******************************/
+		// leemos los valores del joystick
+		JSValue = analogRead(iPinControl);
+
+		// solo actualizamos si estamos por encima de la zona central (para evitar vibraciones)
+		if(JSValue > DEADBANDHIGH || JSValue < DEADBANDLOW)
+		{
+			JSValueMapped = map(JSValue, 0, 1023, -speed, speed); //Mapeamos el valor del joystick (0 to 1023) a (-speed to speed)
+			int newValue= servoValue + JSValueMapped; //add mapped joystick value to present Value
+			if((newValue>iPOS_MIN) && (newValue<iPOS_MAX))
+			{
+				if(newValue!=servoValue) // Solo actualizamos si es distinto. Si hay vibraciones podemos hacer un filtrado
+				{
+					setPosicion(newValue);
+				}
+			}
+		}
+		return getStatus();       
     }
     
      
@@ -99,6 +95,6 @@ protected:
 
 	int iPinControl; // Pin analógico al que se conecta el control
 
-        String strID;
+    String strID;
 
 };
