@@ -14,12 +14,12 @@ struct position
   int pos[nDOF];
 };
 
-controlServo csHip(12,A0,"H");
-controlServo csSoulder(11,A1,"S");
-controlServo csElbow(10,A2,"E");
-controlServo csWristP(9,A3,"WP");
-controlServo csWristR(8,A4,"WR");
-controlServo csGrip(7,A5,"G");
+controlServo csHip(12,A0,"H",1320);
+controlServo csSoulder(11,A1,"S",1018);
+controlServo csElbow(10,A2,"E",1600);
+controlServo csWristP(9,A3,"WP",1100);
+controlServo csWristR(8,A4,"WR",1023);
+controlServo csGrip(7,A5,"G",1000);
 controlServo servos[]={csHip,csSoulder,csElbow,csWristP,csWristR,csGrip};
 
 void setup() 
@@ -28,7 +28,9 @@ void setup()
 
   for(int i=0;i<nDOF;i++)
   {    servos[i].inicializa();  }
-    
+
+//  csSoulder.setSigno(-1);
+//  csElbow.setSigno(-1);  
  /* csHip.inicializa();
   csSoulder.inicializa();
   csElbow.inicializa();
@@ -37,6 +39,7 @@ void setup()
   csGrip.inicializa();*/
 } 
 
+String strStatusOld="";
 void loop() 
 { 
 /*  csHip.checkControlSetServo();
@@ -49,6 +52,9 @@ void loop()
   String strStatus="";
   for(int i=0;i<nDOF;i++)
   {  strStatus+=servos[i].checkControlSetServo(); }
-
-  Serial.println(strStatus);
+  if(strStatus!=strStatusOld)
+  {
+    Serial.println(strStatus);
+    strStatusOld=strStatus;
+  }
 } 

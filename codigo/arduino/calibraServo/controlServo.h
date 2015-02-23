@@ -9,7 +9,7 @@ class controlServo
 {
 public:
 
-	controlServo(int pinServo,int pinControl,int iPosInicial,String id)
+	controlServo(int pinServo,int pinControl,String id,int iPosInicial)
 	{  	    
           init(pinServo,pinControl,id);
           iPOS_Inicial=iPosInicial;        
@@ -21,7 +21,7 @@ public:
 		iPinServo=pinServo;
 		iPOS_MIN=75;  //fully retracted
 		iPOS_MAX=3200;
-		iPOS_Inicial=(iPOS_MAX+iPOS_MIN)/2;
+		iPOS_Inicial=1100;// (iPOS_MAX+iPOS_MIN)/2;
 		strID=id;
 	}
         
@@ -36,11 +36,23 @@ public:
 		delay(10); // waits for the servo to get to they're position before continuing 
 	}
 
-	String getStatus()
-	{	return strID+":"+servoValue;}
+	void setSigno(int signo)
+	{  iSigno=signo;
+           Serial.print("signo"); 
+           Serial.print(strID);
+           Serial.println(iSigno);
+        }
 
-	String getFullStatus()
-	{	return strID+"@"+iPinServo+","+iPinControl+":"+servoValue;}
+	String getStatus()
+	{  if(iSigno==-1)	
+            return strID+"(-):"+servoValue+" ";
+           else
+           return strID+":"+servoValue+" ";
+         }
+
+	String getFullStatus()  // Restamos 14 para que se vea en formato A0-A5
+	{	return strID+"@"+iPinServo+", A"+(iPinControl-14)+":"+servoValue+" ";} 
+
 
 	void inicializa()
 	{
@@ -59,7 +71,7 @@ public:
 		if(JSValue > DEADBANDHIGH || JSValue < DEADBANDLOW)
 		{
 			JSValueMapped = map(JSValue, 0, 1023, -speed, speed); //Mapeamos el valor del joystick (0 to 1023) a (-speed to speed)
-			int newValue= servoValue + JSValueMapped; //add mapped joystick value to present Value
+			int newValue= servoValue + iSigno*JSValueMapped; //add mapped joystick value to present Value
 			if((newValue>iPOS_MIN) && (newValue<iPOS_MAX))
 			{
 				if(newValue!=servoValue) // Solo actualizamos si es distinto. Si hay vibraciones podemos hacer un filtrado
@@ -68,7 +80,8 @@ public:
 				}
 			}
 		}
-		return getStatus();       
+		return getStatus(); 
+                //return getFullStatus();       
     }
     
      
@@ -89,8 +102,9 @@ protected:
 
 	int servoValue;   // posicion actual 
 
-	const static int speed = 5;        // velocidad a la que cambiamos la posición. Para hacerlo fino usar 1
+	const static int speed = 25;        // velocidad a la que cambiamos la posición. Para hacerlo fino usar 1
 
+	int iSigno=1;
 	int iPinServo; // Pin al que está conectado el servo
 
 	int iPinControl; // Pin analógico al que se conecta el control
