@@ -9,8 +9,17 @@ class controlServo
 {
 public:
 
+	controlServo(int pinServo,int pinControl,String id,int iPosInicial,boolean bJoys)
+	{  	    
+		  bJoystick=bJoys;
+          init(pinServo,pinControl,id);
+          iPOS_Inicial=iPosInicial;        
+    }
+
 	controlServo(int pinServo,int pinControl,String id,int iPosInicial)
 	{  	    
+		  bJoystick=true;
+		  iSigno=1;
           init(pinServo,pinControl,id);
           iPOS_Inicial=iPosInicial;        
     }
@@ -61,7 +70,43 @@ public:
 		setPosicion(iPOS_Inicial);
 	}
 
-	String checkControlSetServo() 
+	String checkControlSetServo()
+	{
+		if(bJoystick)
+			return checkControlSetServoByJoystick();
+		else
+			return checkControlSetServoByPotenciometer();
+	}
+
+     
+protected:
+	// Ajuste de la zona central del joytstick para ajustar el 0
+	const static int DEADBANDLOW=482;   //decrease this value if drift occurs, increase it to increase sensitivity around the center position
+	const static int DEADBANDHIGH=542;  //increase this value if drift occurs, decrease it to increase sensitivity around the center position
+
+	int iPOS_MIN;  //fully retracted
+	int iPOS_MAX; //fully extended
+	int iPOS_Inicial; // Initial Position (empezamos con el valor medio)
+
+	Servo servo;    // servo
+
+	int JSValue;             // valor  del joystick. Estará entre 0 and 1023
+
+	int JSValueMapped;        // Se convierte el valor leido en el rango del servo
+
+	int servoValue;   // posicion actual 
+
+	const static int speed = 25;        // velocidad a la que cambiamos la posición. Para hacerlo fino usar 1
+
+	int iSigno;
+	boolean bJoystick;
+	int iPinServo; // Pin al que está conectado el servo
+
+	int iPinControl; // Pin analógico al que se conecta el control
+
+    String strID;
+
+	String checkControlSetServoByJoystick() 
 	{ 
 		/**************Servo Positions *******************************/
 		// leemos los valores del joystick
@@ -84,31 +129,22 @@ public:
                 //return getFullStatus();       
     }
     
-     
-protected:
-	// Ajuste de la zona central del joytstick para ajustar el 0
-	const static int DEADBANDLOW=482;   //decrease this value if drift occurs, increase it to increase sensitivity around the center position
-	const static int DEADBANDHIGH=542;  //increase this value if drift occurs, decrease it to increase sensitivity around the center position
 
-	int iPOS_MIN;  //fully retracted
-	int iPOS_MAX; //fully extended
-	int iPOS_Inicial; // Initial Position (empezamos con el valor medio)
+    String checkControlSetServoByPotenciometer() 
+	{ 
+		/**************Servo Positions *******************************/
+		// leemos los valores del joystick
+		JSValue = analogRead(iPinControl);
 
-	Servo servo;    // servo
+		int newValue= map(JSValue, 0, 1023, iPOS_MIN, iPOS_MAX); //Mapeamos el valor del joystick (0 to 1023) a (iPOS_MIN to iPOS_MAX)
+		if(newValue!=servoValue) // Solo actualizamos si es distinto. Si hay vibraciones podemos hacer un filtrado
+		{
+					setPosicion(newValue);
+		}
+		return getStatus(); 
+        //return getFullStatus();       
+    }
 
-	int JSValue;             // valor  del joystick. Estará entre 0 and 1023
 
-	int JSValueMapped;        // Se convierte el valor leido en el rango del servo
-
-	int servoValue;   // posicion actual 
-
-	const static int speed = 25;        // velocidad a la que cambiamos la posición. Para hacerlo fino usar 1
-
-	int iSigno=1;
-	int iPinServo; // Pin al que está conectado el servo
-
-	int iPinControl; // Pin analógico al que se conecta el control
-
-    String strID;
 
 };

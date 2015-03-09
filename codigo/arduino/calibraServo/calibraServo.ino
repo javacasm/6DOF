@@ -14,7 +14,7 @@ struct position
   int pos[nDOF];
 };
 
-controlServo csHip(12,A0,"H",1320);
+controlServo csHip(12,A0,"H",1320,true);
 controlServo csSoulder(11,A1,"S",1018);
 controlServo csElbow(10,A2,"E",1600);
 controlServo csWristP(9,A3,"WP",1100);
@@ -29,8 +29,8 @@ void setup()
   for(int i=0;i<nDOF;i++)
   {    servos[i].inicializa();  }
 
-//  csSoulder.setSigno(-1);
-//  csElbow.setSigno(-1);  
+  csSoulder.setSigno(-1);
+  csElbow.setSigno(-1);  
  /* csHip.inicializa();
   csSoulder.inicializa();
   csElbow.inicializa();
