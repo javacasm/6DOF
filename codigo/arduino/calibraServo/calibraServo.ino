@@ -1,4 +1,4 @@
-// V 0.5
+// V 0.55
 // Calibrado de las posiciones de los servos
 // Basado en http://learn.robotgeek.com/demo-code/120-arduino-linear-actuator-tutorial-incremental-joystick-for-small-linear-actuator.html
 
